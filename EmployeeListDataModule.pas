@@ -33,6 +33,7 @@ type
   public
     { Public declarations }
     procedure AddEmployee;
+    procedure DeleteEmployee(AID: integer);
     procedure FillEmpList;
     procedure FillListItem(ANode: IXMLDOMNode);
   end;
@@ -98,6 +99,20 @@ end;
 procedure TDmEmpList.DataModuleCreate(Sender: TObject);
 begin
   FillEmpList;
+end;
+
+procedure TDmEmpList.DeleteEmployee(AID: integer);
+var
+  Root: IXMLDOMElement;
+  Node: IXMLDOMNode;
+begin
+  Node := DmMain.Data.selectSingleNode('//Employee[id='+InttoStr(AID)+']');
+  if Node<>nil then begin
+    Node.parentNode.removeChild(Node);
+    if tblEmployeeList.Locate('ID', AID, []) then
+      tblEmployeeList.Delete;
+    DmMain.SaveData;
+  end;
 end;
 
 procedure TDmEmpList.FillEmpList;

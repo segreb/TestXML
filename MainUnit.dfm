@@ -110,6 +110,15 @@ object frmMain: TfrmMain
     Anchors = [akLeft, akBottom]
     TabOrder = 1
   end
+  object btDel: TButton
+    Left = 155
+    Top = 295
+    Width = 75
+    Height = 25
+    Action = acDelEmp
+    Anchors = [akLeft, akBottom]
+    TabOrder = 2
+  end
   object dsrEmployee: TDataSource
     DataSet = DmEmpList.tblEmployeeList
     Left = 424
@@ -122,6 +131,11 @@ object frmMain: TfrmMain
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100
       OnExecute = acAddEmpExecute
       OnUpdate = acAddEmpUpdate
+    end
+    object acDelEmp: TAction
+      Caption = #1059#1076#1072#1083#1080#1090#1100
+      OnExecute = acDelEmpExecute
+      OnUpdate = acDelEmpUpdate
     end
   end
 end

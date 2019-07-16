@@ -16,9 +16,13 @@ type
     btAddEmp: TButton;
     ActionList1: TActionList;
     acAddEmp: TAction;
+    acDelEmp: TAction;
+    btDel: TButton;
     procedure acAddEmpExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure acAddEmpUpdate(Sender: TObject);
+    procedure acDelEmpUpdate(Sender: TObject);
+    procedure acDelEmpExecute(Sender: TObject);
   private
     { Private declarations }
     FLockAddEmployee: boolean;
@@ -43,6 +47,16 @@ end;
 procedure TfrmMain.acAddEmpUpdate(Sender: TObject);
 begin
   acAddEmp.Enabled := not FLockAddEmployee;
+end;
+
+procedure TfrmMain.acDelEmpExecute(Sender: TObject);
+begin
+  DmEmpList.DeleteEmployee(dbg.DataSource.DataSet['id']);
+end;
+
+procedure TfrmMain.acDelEmpUpdate(Sender: TObject);
+begin
+  acDelEmp.Enabled := not VarIsNull(dbg.DataSource.DataSet['id']);
 end;
 
 procedure TfrmMain.AppOnException(Sender: TObject; E: Exception);
