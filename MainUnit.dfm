@@ -32,9 +32,11 @@ object frmMain: TfrmMain
     DrawMemoText = True
     DynProps = <>
     Flat = True
-    OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
+    Options = [dgEditing, dgTitles, dgIndicator, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit]
+    OptionsEh = [dghFixed3D, dghFrozen3D, dghHighlightFocus, dghClearSelection, dghAutoSortMarking, dghMultiSortMarking, dghDialogFind, dghColumnResize, dghExtendVertLines]
     TabOrder = 0
     TitleParams.MultiTitle = True
+    OnTitleBtnClick = dbgTitleBtnClick
     Columns = <
       item
         CellButtons = <>
@@ -53,7 +55,6 @@ object frmMain: TfrmMain
         FieldName = 'Firstname'
         Footers = <>
         Title.Caption = #1048#1084#1103
-        Title.TitleButton = True
         Width = 100
       end
       item
@@ -63,7 +64,6 @@ object frmMain: TfrmMain
         FieldName = 'Surname'
         Footers = <>
         Title.Caption = #1054#1090#1095#1077#1089#1090#1074#1086
-        Title.TitleButton = True
         Width = 150
       end
       item
@@ -74,7 +74,6 @@ object frmMain: TfrmMain
         FieldName = 'TypeName'
         Footers = <>
         Title.Caption = #1058#1080#1087' '#1088#1072#1073#1086#1090#1085#1080#1082#1072
-        Title.TitleButton = True
         Width = 60
       end
       item
@@ -85,7 +84,6 @@ object frmMain: TfrmMain
         FieldName = 'Birthday'
         Footers = <>
         Title.Caption = #1044#1072#1090#1072' '#1088#1086#1078#1076#1077#1085#1080#1103
-        Title.TitleButton = True
         Width = 65
       end
       item

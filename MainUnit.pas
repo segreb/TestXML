@@ -7,7 +7,11 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.StdCtrls, DBGridEhGrouping, ToolCtrlsEh, DBGridEhToolCtrls, DynVarsEh,
   EhLibVCL, GridsEh, DBAxisGridsEh, DBGridEh, MainDataModule,
-  System.Actions, Vcl.ActnList, EmployeeListDataModule, Data.DB;
+  System.Actions, Vcl.ActnList, EmployeeListDataModule, Data.DB, Vcl.Grids,
+  Vcl.DBGrids;
+
+const
+  WM_CALLSORT = WM_USER + 1;
 
 type
   TfrmMain = class(TForm)
@@ -27,9 +31,13 @@ type
     procedure acDelEmpExecute(Sender: TObject);
     procedure acEditEmpUpdate(Sender: TObject);
     procedure acEditEmpExecute(Sender: TObject);
+    procedure dbgTitleBtnClick(Sender: TObject; ACol: Integer;
+      Column: TColumnEh);
   private
     { Private declarations }
     FLockAddEmployee: boolean;
+  protected
+    procedure WmCallSort(var Message: TMessage); message WM_CALLSORT;
   public
     { Public declarations }
     procedure AppOnException(Sender: TObject; E: Exception);
@@ -79,9 +87,26 @@ begin
   if E is EAddEmployee then FLockAddEmployee := True;
 end;
 
+procedure TfrmMain.dbgTitleBtnClick(Sender: TObject; ACol: Integer; Column: TColumnEh);
+var
+  DirSort: integer;
+begin
+  case Column.Title.SortMarker of
+  smNoneEh: DirSort := 1;
+  smUpEh:   DirSort := -1;
+  smDownEh: DirSort := 1;
+  end;
+  PostMessage(Handle, WM_CALLSORT, ACol, DirSort);
+end;
+
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   FLockAddEmployee := False;
+end;
+
+procedure TfrmMain.WmCallSort(var Message: TMessage);
+begin
+  DmEmpList.RearrangeSorted(dbg.Columns[Message.WParam].FieldName, Message.LParam);
 end;
 
 end.

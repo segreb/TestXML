@@ -38,6 +38,8 @@ type
     procedure FillEmpList;
     procedure FillListItem(ANode: IXMLDOMNode);
     procedure UpdateListItem(AID: integer; ANode: IXMLDOMNode);
+    procedure RearrangeSorted(ASortName: string; ADirection: integer{-1,0,1});
+    procedure FillListItemSorted(ANode: IXMLDOMNode; ASortName: string; ADirection: integer);
   end;
 
 var
@@ -154,6 +156,70 @@ begin
     ANode.SelectSingleNode('child::'+edEmpdate).Text,
     ANode.SelectSingleNode('child::'+edTypeID).Text
   ]);
+end;
+
+procedure TDmEmpList.FillListItemSorted(ANode: IXMLDOMNode; ASortName: string; ADirection: integer);
+var
+  fInserted: boolean;
+  fAllowInsert: boolean;
+  str: string;
+  dt: TDateTime;
+begin
+  if ADirection=0 then begin
+    FillListItem(ANode);
+    Exit;
+  end;
+
+  fInserted := False;
+  tblEmployeeList.First;
+  while not tblEmployeeList.Eof do begin
+    fAllowInsert := False;
+    if CompareText(ASortName, edFamilyname)=0 then begin
+      str := ANode.SelectSingleNode('child::'+edFamilyname).Text;
+      fAllowInsert := (ADirection=1) and (CompareText(str, tblEmployeeList[edFamilyname])<0)
+                      or
+                      (ADirection=-1) and (CompareText(str, tblEmployeeList[edFamilyname])>0);
+    end else
+    if CompareText(ASortName, edEmpdate)=0 then begin
+      dt := StrToDate(ANode.SelectSingleNode('child::'+edEmpdate).Text);
+      fAllowInsert := (ADirection=1) and (dt<tblEmployeeList[edEmpdate])
+                      or
+                      (ADirection=-1) and (dt>tblEmployeeList[edEmpdate]);
+    end;
+    if fAllowInsert then begin
+      tblEmployeeList.InsertRecord([
+        ANode.SelectSingleNode('child::'+edID).Text,
+        ANode.SelectSingleNode('child::'+edFamilyname).Text,
+        ANode.SelectSingleNode('child::'+edFirstname).Text,
+        ANode.SelectSingleNode('child::'+edSurname).Text,
+        ANode.SelectSingleNode('child::'+edBirthday).Text,
+        ANode.SelectSingleNode('child::'+edEmpdate).Text,
+        ANode.SelectSingleNode('child::'+edTypeID).Text
+      ]);
+
+      fInserted := True;
+      Break;
+    end;
+    tblEmployeeList.Next;
+  end;
+  if not fInserted then
+    FillListItem(ANode);
+end;
+
+procedure TDmEmpList.RearrangeSorted(ASortName: string; ADirection: integer);
+var
+  Root: IXMLDOMElement;
+  Nodes: IXmlDomNodeList;
+  i: integer;
+begin
+  tblEmployeeList.Close;
+  tblEmployeeList.Active := True;
+
+  Root := DmMain.Data.documentElement;
+  Nodes := Root.selectNodes('//'+edEmployee);
+  for i:=0 to Nodes.length-1 do
+    FillListItemSorted(Nodes.item[i], ASortName, ADirection);
+  tblEmployeeList.First;
 end;
 
 procedure TDmEmpList.UpdateListItem(AID: integer; ANode: IXMLDOMNode);
