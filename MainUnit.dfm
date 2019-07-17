@@ -1,6 +1,7 @@
 object frmMain: TfrmMain
   Left = 0
   Top = 0
+  ActiveControl = dbg
   Caption = #1054#1090#1076#1077#1083' '#1082#1072#1076#1088#1086#1074
   ClientHeight = 322
   ClientWidth = 646
@@ -111,11 +112,20 @@ object frmMain: TfrmMain
     TabOrder = 1
   end
   object btDel: TButton
-    Left = 155
+    Left = 156
     Top = 295
     Width = 75
     Height = 25
     Action = acDelEmp
+    Anchors = [akLeft, akBottom]
+    TabOrder = 3
+  end
+  object btEdit: TButton
+    Left = 79
+    Top = 295
+    Width = 75
+    Height = 25
+    Action = acEditEmp
     Anchors = [akLeft, akBottom]
     TabOrder = 2
   end
@@ -136,6 +146,11 @@ object frmMain: TfrmMain
       Caption = #1059#1076#1072#1083#1080#1090#1100
       OnExecute = acDelEmpExecute
       OnUpdate = acDelEmpUpdate
+    end
+    object acEditEmp: TAction
+      Caption = #1048#1079#1084#1077#1085#1080#1090#1100
+      OnExecute = acEditEmpExecute
+      OnUpdate = acEditEmpUpdate
     end
   end
 end

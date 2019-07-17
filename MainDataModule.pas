@@ -23,6 +23,8 @@ const
   edEmpdate  = 'Empdate';
   edTypeID   = 'TypeID';
   edTypeName = 'TypeName';
+  edDescription = 'Description';
+  edAssigned = 'Assigned';
 
 type
   TDmMain = class(TDataModule)

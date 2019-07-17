@@ -34,18 +34,20 @@ type
     { Public declarations }
     procedure AddEmployee;
     procedure DeleteEmployee(AID: integer);
+    procedure EditEmployee(AID: integer);
     procedure FillEmpList;
     procedure FillListItem(ANode: IXMLDOMNode);
+    procedure UpdateListItem(AID: integer; ANode: IXMLDOMNode);
   end;
 
 var
   DmEmpList: TDmEmpList;
 
 implementation
-
 {%CLASSGROUP 'Vcl.Controls.TControl'}
-
 {$R *.dfm}
+uses
+  EmployeeEditDataModule;
 
 procedure TDmEmpList.AddEmployee;
 var
@@ -115,6 +117,18 @@ begin
   end;
 end;
 
+procedure TDmEmpList.EditEmployee(AID: integer);
+var
+  dmEdit: TDmEmpEdit;
+begin
+  dmEdit := TDmEmpEdit.Create(Application);
+  try
+    dmEdit.EditEmployee(AID);
+  finally
+    dmEdit.Free;
+  end;
+end;
+
 procedure TDmEmpList.FillEmpList;
 var
   Root: IXMLDOMElement;
@@ -140,6 +154,25 @@ begin
     ANode.SelectSingleNode('child::'+edEmpdate).Text,
     ANode.SelectSingleNode('child::'+edTypeID).Text
   ]);
+end;
+
+procedure TDmEmpList.UpdateListItem(AID: integer; ANode: IXMLDOMNode);
+begin
+  if not tblEmployeeList.Locate('ID', AID, []) then
+    raise Exception.Create('Не зайдена запись для обновления');
+  tblEmployeeList.Edit;
+  try
+    tblEmployeeList[edFamilyname] := ANode.SelectSingleNode('child::'+edFamilyname).Text;
+    tblEmployeeList[edFirstname]  := ANode.SelectSingleNode('child::'+edFirstname).Text;
+    tblEmployeeList[edSurname]    := ANode.SelectSingleNode('child::'+edSurname).Text;
+    tblEmployeeList[edBirthday] := ANode.SelectSingleNode('child::'+edBirthday).Text;
+    tblEmployeeList[edEmpdate]  := ANode.SelectSingleNode('child::'+edEmpdate).Text;
+    tblEmployeeList[edTypeID]   := ANode.SelectSingleNode('child::'+edTypeID).Text;
+    tblEmployeeList.Post;
+  except
+    tblEmployeeList.Cancel;
+    raise;
+  end;
 end;
 
 end.
